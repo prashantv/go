@@ -149,8 +149,27 @@ func visitFile(path string, f os.FileInfo, err error) error {
 	return nil
 }
 
-func walkDir(path string) {
-	filepath.Walk(path, visitFile)
+func visitFileSkip(path string, f os.FileInfo, err error) error {
+	if err == nil && f.IsDir() {
+		name := f.Name()
+		if name[:1] == "_" {
+			return filepath.SkipDir
+		}
+		if len(name) > 1 && name[:1] == "." {
+			return filepath.SkipDir
+		}
+	}
+	return visitFile(path, f, err)
+}
+
+// walkDir skips folders prefixed with with "." and "_"
+// if skip is set.
+func walkDir(path string, skip bool) {
+	visit := visitFile
+	if skip {
+		visit = visitFileSkip
+	}
+	filepath.Walk(path, visit)
 }
 
 func main() {
@@ -194,11 +213,17 @@ func gofmtMain() {
 
 	for i := 0; i < flag.NArg(); i++ {
 		path := flag.Arg(i)
+		skip := false
+		if strings.HasSuffix(path, "...") {
+			path = strings.TrimSuffix(path, "...")
+			skip = true
+		}
+
 		switch dir, err := os.Stat(path); {
 		case err != nil:
 			report(err)
 		case dir.IsDir():
-			walkDir(path)
+			walkDir(path, skip)
 		default:
 			if err := processFile(path, nil, os.Stdout, false); err != nil {
 				report(err)
