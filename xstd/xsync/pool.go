@@ -13,6 +13,11 @@ type Pool[T any] struct {
 // If the pool returns no element, p.New is returned if set, or a zero value is returned.
 func (p *Pool[T]) Get() T {
 	x := p.pool.Get()
+<<<<<<< HEAD
+||||||| parent of 625acc0 (add xsync)
+=======
+	// TODO: Investigate assembly to see if it's better to handle `x != nil` first.
+>>>>>>> 625acc0 (add xsync)
 	if x == nil {
 		if p.New == nil {
 			var zero T
