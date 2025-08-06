@@ -1,0 +1,8 @@
+[tools]
+"doc2go" = "latest"
+
+[alias]
+"doc2go" = "ubi:abhinav/doc2go"
+
+[tasks.generate-docs]
+run = 'scripts/generate-docs.sh'
