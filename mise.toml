@@ -1,0 +1,14 @@
+[tools]
+doc2go = "latest"
+go = "1.24"
+
+[alias]
+doc2go = 'ubi:abhinav/doc2go'
+
+[tasks.generate-docs]
+run = 'scripts/generate-docs.sh'
+
+[tasks.serve-docs]
+depends = ['generate-docs']
+dir = './_site'
+run = 'python3 -m http.server 8000'
