@@ -5,6 +5,15 @@ go = "1.24"
 [alias]
 doc2go = 'ubi:abhinav/doc2go'
 
+[tasks.list-module-packages]
+run = """
+go work edit -json \
+  | jq -r '.Use[].DiskPath | . + "/..."'
+"""
+
+[tasks.test]
+run = "go test $(mise run list-module-packages)"
+
 [tasks.generate-docs]
 run = 'scripts/generate-docs.sh'
 
