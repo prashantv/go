@@ -1,0 +1,42 @@
+version: "2"
+
+# Print all issues reported by all linters.
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+linters:
+  # We'll track the golangci-lint default linters manually
+  # instead of letting them change without our control.
+  default: none
+  enable:
+    # golangci-lint defaults:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+
+    # Our own extras:
+    - revive
+    - nolintlint
+
+  settings:
+
+    errcheck:
+      exclude-functions:
+        # Writing a plain string to a fmt.State cannot fail.
+        - io.WriteString(fmt.State)
+        - fmt.Fprintf(fmt.State)
+
+    govet:
+      # These govet checks are disabled by default, but they're useful.
+      enable:
+        - nilness
+        - reflectvaluecompare
+        - sortslice
+        - unusedwrite
+
+formatters:
+  enable:
+    - gofumpt

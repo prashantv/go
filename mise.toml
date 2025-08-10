@@ -1,6 +1,11 @@
+[settings]
+experimental = true
+lockfile = true
+
 [tools]
 doc2go = "latest"
 go = "1.24"
+golangci-lint = "latest"
 
 [alias]
 doc2go = 'ubi:abhinav/doc2go'
@@ -13,6 +18,12 @@ go work edit -json \
 
 [tasks.test]
 run = "go test $(mise run list-module-packages)"
+
+[tasks.lint]
+depends = ["lint-golangci-lint"]
+
+[tasks.lint-golangci-lint]
+run = "golangci-lint run $(mise run list-module-packages)"
 
 [tasks.generate-docs]
 run = 'scripts/generate-docs.sh'
