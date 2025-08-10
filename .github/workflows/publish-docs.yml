@@ -1,0 +1,46 @@
+name: Public Docs
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      head:
+        description: "Git commit to publish documentation for."
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.head || github.ref }}
+      - uses: jdx/mise-action@v2
+      - name: "Generate docs"
+        run: "mise run generate-docs"
+      - name: Upload pages
+        uses: actions/upload-pages-artifact@v3
+
+  publish:
+    name: Publish website
+    # Don't run until the build has finished running.
+    needs: build
+
+    # Grants the GITHUB_TOKEN used by this job
+    # permissions needed to publish the website.
+    permissions:
+      pages: write
+      id-token: write
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+set -x
+
+# regenerate _site with docs
+rm -rf _site
+doc2go -home go.prashantv.com $(go work edit  -json | jq -r '.Use[].DiskPath | . + "/..."')
+
+# add meta tag for go import
+find _site -iname *.html -exec go run scripts/appendmeta/appendmeta.go {} \;
+
