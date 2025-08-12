@@ -3,6 +3,7 @@ go 1.24
 use (
 	.
 	./container/set
+	./sync/exp/shardval
 	./xstd/xslices
 	./xstd/xsync
 )
